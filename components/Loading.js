@@ -10,8 +10,8 @@ export default function LoadingScreen() {
           display: "block",
           shapeRendering: "auto",
         }}
-        width="inherit"
-        height="inherit"
+        width="100vw"
+        height="100vh"
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid"
       >
