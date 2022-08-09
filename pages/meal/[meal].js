@@ -3,8 +3,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
-import Layout from "~/components/Layout/Layout";
+import Layout from "~/components/layout/Layout";
 import Loading from "~/components/Loading";
+import Image from "next/image";
 
 function _meal() {
   const router = useRouter();
@@ -30,7 +31,7 @@ function _meal() {
         setLoading(false);
       }, 500);
     }
-  }, [meal]);
+  }, [meal, router]);
 
   function getIngredients(menu) {
     const ingredients = [];
@@ -59,7 +60,7 @@ function _meal() {
               <div className="block">
                 <img
                   className="object-cover w-full h-full rounded-lg max-h-64 sm:max-h-96"
-                  src={menu.strMealThumb}
+                  src={menu.strMealThumb} alt={menu.strMeal}
                 />
               </div>
             </div>

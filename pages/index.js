@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Layout from "~/components/Layout/Layout";
+import Layout from "~/components/layout/Layout";
 import Head from "next/head";
 import axios from "axios";
 import Loading from "~/components/Loading";
