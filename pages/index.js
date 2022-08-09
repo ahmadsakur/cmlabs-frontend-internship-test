@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
 import Head from "next/head";
 import axios from "axios";
-import LoadingScreen from "../components/Loading";
+import Loading from "../components/Loading";
 import CategoryCard from "../components/CategoryCard";
 function Index() {
   const [categories, setCategories] = useState([]);
@@ -58,7 +58,7 @@ function Index() {
         <section className="h-auto bg-white px-10 mx-auto max-w-7xl">
           {loading ? (
             <div className="absolute z-10">
-              <LoadingScreen />
+              <Loading />
             </div>
           ) : (
             <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

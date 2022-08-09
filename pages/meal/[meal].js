@@ -1,45 +1,184 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Head from "next/head";
+import axios from "axios";
+import Layout from "../../components/Layout/Layout";
+import Loading from "../../components/Loading";
 
 function _meal() {
+  const router = useRouter();
+  const { meal } = router.query;
+  const [loading, setLoading] = useState(true);
+  const [menu, setMenu] = useState({});
+  useEffect(() => {
+    if (meal) {
+      const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal}`;
+      async function getMeals() {
+        await axios
+          .get(url)
+          .then(({ data }) => {
+            setMenu(data.meals[0]);
+          })
+          .catch((err) => {
+            router.push("/404");
+          });
+      }
+
+      getMeals();
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [meal]);
+
+  function getIngredients(menu) {
+    const ingredients = [];
+    for (let i = 1; i <= 20; i++) {
+      if (menu[`strIngredient${i}`]) {
+        ingredients.push([menu[`strMeasure${i}`], menu[`strIngredient${i}`]]);
+      } else {
+        break;
+      }
+    }
+    return ingredients;
+  }
+  if (loading) {
+    return <Loading />;
+  }
   return (
-    <div>
-      <div className="flex flex-col items-center sm:px-5 md:flex-row">
-        <div className="w-full md:w-1/2">
-          <a href="#_" className="block">
-            <img
-              className="object-cover w-full h-full rounded-lg max-h-64 sm:max-h-96"
-              src="https://cdn.devdojo.com/images/may2021/cupcakes.jpg"
-            />
-          </a>
-        </div>
-        <div className="flex flex-col items-start justify-center w-full h-full py-6 mb-6 md:mb-0 md:w-1/2">
-          <div className="flex flex-col items-start justify-center h-full space-y-3 transform md:pl-10 lg:pl-16 md:space-y-5">
-            <div className="bg-pink-500 flex items-center pl-2 pr-3 py-1.5 leading-none rounded-full text-xs font-medium uppercase text-white inline-block">
-              <svg
-                className="w-3.5 h-3.5 mr-1"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-              <span>Featured</span>
+    <>
+      <Head>
+        <title>{!menu ? "My Meals" : menu.strMeal}</title>
+      </Head>
+      <Layout>
+        {/* Header Section */}
+        <section className="px-10 py-24 mx-auto max-w-7xl">
+          <div className="flex flex-col items-start sm:px-5 md:flex-row">
+            <div className="w-full md:w-1/2">
+              <div className="block">
+                <img
+                  className="object-cover w-full h-full rounded-lg max-h-64 sm:max-h-96"
+                  src={menu.strMealThumb}
+                />
+              </div>
             </div>
-            <h1 className="text-4xl font-bold leading-none lg:text-5xl xl:text-6xl">
-              <a href="#_">Savory Templates. Sweet Designs.</a>
-            </h1>
-            <p className="pt-2 text-sm font-medium">
-              by{" "}
-              <a href="#_" className="mr-1 underline">
-                John Doe
-              </a>{" "}
-              · <span className="mx-1">April 23rd, 2021</span> ·{" "}
-              <span className="mx-1 text-gray-600">5 min. read</span>
-            </p>
+            <div className="flex flex-col items-start justify-center w-full h-full py-6 mb-6 md:mb-0 md:w-1/2">
+              <div className="flex flex-col items-start justify-center h-full space-y-3 transform md:pl-10 lg:pl-16 md:space-y-5">
+                <Link href={`/category/${menu.strCategory}`}>
+                  <a
+                    href="#_"
+                    className="flex items-center px-4 py-2.5 mb-3 text-sm text-white bg-indigo-600 rounded-md sm:mb-0 hover:bg-indigo-700 sm:w-auto"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 mr-1"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1={5} y1={12} x2={25} y2={12} />
+                      <polyline points="12 5 5 12 12 19" />
+                    </svg>
+                    {menu.strCategory}
+                  </a>
+                </Link>
+                <h1 className="text-4xl font-bold leading-none lg:text-5xl xl:text-6xl">
+                  <div href="#_">{menu.strMeal}</div>
+                </h1>
+                <div className="h-1 block my-2 w-1/6 bg-gray-200 rounded-xl"></div>
+                <div className="pt-2 text-sm font-medium text-gray-600">
+                  Origin{": "}
+                  <div className="mr-1 inline">{menu.strArea}</div>{" "}
+                  <span className="text-gray-600 border-l-2 pl-2">
+                    Tags{`: ${menu.strTags}`}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </section>
+        {/* End of Header Section */}
+        {/* Ingredients Section */}
+        <section className="px-10 mx-auto max-w-7xl">
+          <div className="flex flex-col md:flex-row items-start justify-center w-full h-full gap-2">
+            <div className="rounded-lg border shadow-lg p-4 sm:p-6 w-full sm:w-1/2">
+              <div className="text-2xl font-bold leading-relaxed flex-auto mb-2">
+                Ingredients
+              </div>
+              <table className="text-sm text-left text-gray-500 w-full">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
+                  <tr>
+                    <th scope="col" className="py-3 px-6">
+                      Number
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      Ingredient
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getIngredients(menu).map((ingredient, index) => (
+                    <tr className="bg-white border-b" key={index}>
+                      <td scope="row" className="py-4 px-6 ">
+                        {index + 1}
+                      </td>
+                      <td className="py-4 px-6 font-medium text-gray-900">
+                        {ingredient[1]}
+                      </td>
+                      <td className="py-4 px-6">{ingredient[0]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="text-md leading-5"></div>
+            </div>
+            <div className="rounded-lg border shadow-lg p-4 sm:p-6 w-full sm:w-1/2">
+              <div className="text-2xl font-bold leading-relaxed">Recipe</div>
+              <div className="h-1 block my-2 w-1/6 bg-gray-200 rounded-xl"></div>
+              <div className="text-md">
+                {menu.strInstructions}
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* end of Ingredient */}
+        {/* YT Section */}
+        <section className="px-0 py-8 md:py-32 bg-white sm:px-10">
+          <div className="container items-center max-w-6xl px-8 mx-auto xl:px-5">
+            <div className="flex flex-wrap items-center sm:-mx-3">
+              <div className="w-full md:w-1/2 md:px-3">
+                <div className="w-full pb-6 space-y-6 sm:max-w-md lg:max-w-lg md:space-y-4 lg:space-y-8 xl:space-y-9 sm:pr-5 lg:pr-0 md:pb-0">
+                  <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-4xl lg:text-5xl xl:text-6xl">
+                    <span className="block xl:inline">Watch the </span>
+                    <span className="block text-indigo-600 xl:inline">
+                      Full Tutorial
+                    </span>
+                  </h1>
+                  <p className="mx-auto text-base text-gray-500 sm:max-w-md lg:text-xl md:max-w-3xl">
+                    We help you to learn it by providing you with a step by step
+                    guide to help you learn how to make {menu.strMeal}.
+                  </p>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2">
+                <iframe
+                  className="w-full h-48 md:h-80 overflow-hidden rounded-md shadow-xl sm:rounded-xl"
+                  src={menu.strYoutube?.replace("watch?v=", "embed/")}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* End of YT Section */}
+      </Layout>
+    </>
   );
 }
 

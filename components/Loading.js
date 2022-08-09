@@ -1,4 +1,4 @@
-export default function LoadingScreen() {
+export default function Loading() {
   return (
     <div className="fixed top-0 left-0 z-50 w-full h-full bg-opacity-40 bg-black">
       {/*?xml version="1.0" encoding="utf-8"?*/}

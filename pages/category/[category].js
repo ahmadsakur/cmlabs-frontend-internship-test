@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import Head from "next/head";
 import axios from "axios";
-import LoadingScreen from "../../components/Loading";
+import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
 import ItemCard from "../../components/ItemCard";
-import { getURL } from "next/dist/shared/lib/utils";
 
 function _category() {
   const router = useRouter();
@@ -27,7 +26,9 @@ function _category() {
           });
       }
       getMeals();
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   }, [category]);
   return (
@@ -50,7 +51,7 @@ function _category() {
             <div className="grid w-full grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-4">
               {loading ? (
                 <div className="absolute z-10">
-                  <LoadingScreen />
+                  <Loading />
                 </div>
               ) : (
                 menu.map((item) => (
