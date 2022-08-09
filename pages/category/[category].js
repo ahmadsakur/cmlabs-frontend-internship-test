@@ -34,7 +34,7 @@ function _category() {
   return (
     <>
       <Head>
-        <title>Category | {category}</title>
+        <title>Category</title>
       </Head>
       <Layout>
         {/* Section 1 */}
