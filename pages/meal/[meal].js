@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
-import Layout from "../../components/Layout/Layout";
-import Loading from "../../components/Loading";
+import Layout from "~/components/Layout/Layout";
+import Loading from "~/components/Loading";
 
 function _meal() {
   const router = useRouter();

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../components/Layout/Layout";
+import Layout from "~/components/Layout/Layout";
 import Head from "next/head";
 import axios from "axios";
-import Loading from "../components/Loading";
-import CategoryCard from "../components/CategoryCard";
+import Loading from "~/components/Loading";
+import CategoryCard from "~/components/CategoryCard";
 function Index() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
